@@ -1,26 +1,27 @@
-import React from 'react';
+import React from "react";
 
 import {
   StyleSheet,
   PanResponder,
   View,
+  Text,
   Platform,
   Dimensions,
   I18nManager,
   ImageBackground,
-} from 'react-native';
+} from "react-native";
 
-import DefaultMarker from './DefaultMarker';
-import DefaultLabel from './DefaultLabel';
-import { createArray, valueToPosition, positionToValue } from './converters';
+import DefaultMarker from "./DefaultMarker";
+import DefaultLabel from "./DefaultLabel";
+import { createArray, valueToPosition, positionToValue } from "./converters";
 
 export default class MultiSlider extends React.Component {
   static defaultProps = {
     values: [0],
     onValuesChangeStart: () => {},
-    onValuesChange: values => {},
-    onValuesChangeFinish: values => {},
-    onMarkersPosition: values => {},
+    onValuesChange: (values) => {},
+    onValuesChangeFinish: (values) => {},
+    onMarkersPosition: (values) => {},
     step: 1,
     min: 0,
     max: 10,
@@ -55,8 +56,8 @@ export default class MultiSlider extends React.Component {
       createArray(this.props.min, this.props.max, this.props.step);
     this.stepLength = this.props.sliderLength / this.optionsArray.length;
 
-    var initialValues = this.props.values.map(value =>
-      valueToPosition(value, this.optionsArray, this.props.sliderLength),
+    var initialValues = this.props.values.map((value) =>
+      valueToPosition(value, this.optionsArray, this.props.sliderLength)
     );
 
     this.state = {
@@ -89,29 +90,29 @@ export default class MultiSlider extends React.Component {
     };
 
     this._panResponderBetween = customPanResponder(
-      gestureState => {
+      (gestureState) => {
         this.startOne(gestureState);
         this.startTwo(gestureState);
       },
-      gestureState => {
+      (gestureState) => {
         this.moveOne(gestureState);
         this.moveTwo(gestureState);
       },
-      gestureState => {
+      (gestureState) => {
         this.endOne(gestureState);
         this.endTwo(gestureState);
-      },
+      }
     );
 
     this._panResponderOne = customPanResponder(
       this.startOne,
       this.moveOne,
-      this.endOne,
+      this.endOne
     );
     this._panResponderTwo = customPanResponder(
       this.startTwo,
       this.moveTwo,
-      this.endTwo,
+      this.endTwo
     );
   };
 
@@ -133,7 +134,7 @@ export default class MultiSlider extends React.Component {
     }
   };
 
-  moveOne = gestureState => {
+  moveOne = (gestureState) => {
     if (!this.props.enabledOne) {
       return;
     }
@@ -168,12 +169,12 @@ export default class MultiSlider extends React.Component {
       var value = positionToValue(
         confined,
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
       var snapped = valueToPosition(
         value,
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
       this.setState({
         positionOne: this.props.snapped ? snapped : confined,
@@ -195,13 +196,13 @@ export default class MultiSlider extends React.Component {
               this.state.positionOne,
               this.state.positionTwo,
             ]);
-          },
+          }
         );
       }
     }
   };
 
-  moveTwo = gestureState => {
+  moveTwo = (gestureState) => {
     if (!this.props.enabledTwo) {
       return;
     }
@@ -235,12 +236,12 @@ export default class MultiSlider extends React.Component {
       var value = positionToValue(
         confined,
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
       var snapped = valueToPosition(
         value,
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
 
       this.setState({
@@ -262,13 +263,13 @@ export default class MultiSlider extends React.Component {
               this.state.positionOne,
               this.state.positionTwo,
             ]);
-          },
+          }
         );
       }
     }
   };
 
-  endOne = gestureState => {
+  endOne = (gestureState) => {
     if (gestureState.moveX === 0 && this.props.onToggleOne) {
       this.props.onToggleOne();
       return;
@@ -285,11 +286,11 @@ export default class MultiSlider extends React.Component {
           change.push(this.state.valueTwo);
         }
         this.props.onValuesChangeFinish(change);
-      },
+      }
     );
   };
 
-  endTwo = gestureState => {
+  endTwo = (gestureState) => {
     if (gestureState.moveX === 0 && this.props.onToggleTwo) {
       this.props.onToggleTwo();
       return;
@@ -305,7 +306,7 @@ export default class MultiSlider extends React.Component {
           this.state.valueOne,
           this.state.valueTwo,
         ]);
-      },
+      }
     );
   };
 
@@ -318,8 +319,8 @@ export default class MultiSlider extends React.Component {
     const { positionOne, positionTwo } = this.state;
 
     if (
-      typeof positionOne === 'undefined' &&
-      typeof positionTwo !== 'undefined'
+      typeof positionOne === "undefined" &&
+      typeof positionTwo !== "undefined"
     ) {
       return;
     }
@@ -352,7 +353,7 @@ export default class MultiSlider extends React.Component {
       const positionOne = valueToPosition(
         this.props.values[0],
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
       nextState.valueOne = this.props.values[0];
       nextState.pastOne = positionOne;
@@ -361,7 +362,7 @@ export default class MultiSlider extends React.Component {
       const positionTwo = valueToPosition(
         this.props.values[1],
         this.optionsArray,
-        this.props.sliderLength,
+        this.props.sliderLength
       );
       nextState.valueTwo = this.props.values[1];
       nextState.pastTwo = positionTwo;
@@ -379,6 +380,7 @@ export default class MultiSlider extends React.Component {
       sliderLength,
       markerOffsetX,
       markerOffsetY,
+      steps,
     } = this.props;
     const twoMarkers = this.props.values.length == 2; // when allowOverlap, positionTwo could be 0, identified as string '0' and throwing 'RawText 0 needs to be wrapped in <Text>' error
 
@@ -408,8 +410,6 @@ export default class MultiSlider extends React.Component {
     } = this.props.touchDimensions;
     const touchStyle = {
       borderRadius: borderRadius || 0,
-      ...height && { height },
-      ...width && { width },
     };
 
     const markerContainerOne = {
@@ -426,19 +426,19 @@ export default class MultiSlider extends React.Component {
 
     if (this.props.vertical) {
       containerStyle.push({
-        transform: [{ rotate: '-90deg' }],
+        transform: [{ rotate: "-90deg" }],
       });
     }
 
     const body = (
       <React.Fragment>
-        <View style={[styles.fullTrack, { width: sliderLength }]}>
+        <View style={[{ width: sliderLength }]}>
           <View
             style={[
               styles.track,
               this.props.trackStyle,
               trackOneStyle,
-              { width: trackOneLength },
+              { width: sliderLength },
             ]}
           />
           <View
@@ -446,20 +446,33 @@ export default class MultiSlider extends React.Component {
               styles.track,
               this.props.trackStyle,
               trackTwoStyle,
-              { width: trackTwoLength },
+              { width: trackTwoLength, left: trackOneLength, top: -2 },
             ]}
-            {...(twoMarkers ? this._panResponderBetween.panHandlers : {})}
           />
-          {twoMarkers && (
-            <View
-              style={[
-                styles.track,
-                this.props.trackStyle,
-                trackThreeStyle,
-                { width: trackThreeLength },
-              ]}
-            />
-          )}
+          <View style={styles.scaleContainer}>
+            {steps.labels.map((ss, index) => {
+              return (
+                <View
+                  style={{
+                    height: 20,
+                    width: 2,
+                    top: -14,
+                    opacity: 0.7,
+                    backgroundColor: "white",
+                  }}
+                />
+              );
+            })}
+          </View>
+          <View style={styles.scaleLabelContainer}>
+            {steps.labels.map((ss, index) => {
+              return (
+                <View style={{ width: 60, alignItems: "center" }}>
+                  <Text style={styles.scaleLabel}>{ss}</Text>
+                </View>
+              );
+            })}
+          </View>
           <View
             style={[
               styles.markerContainer,
@@ -470,7 +483,7 @@ export default class MultiSlider extends React.Component {
           >
             <View
               style={[styles.touch, touchStyle]}
-              ref={component => (this._markerOne = component)}
+              ref={(component) => (this._markerOne = component)}
               {...this._panResponderOne.panHandlers}
             >
               {isMarkersSeparated === false ? (
@@ -508,7 +521,7 @@ export default class MultiSlider extends React.Component {
             >
               <View
                 style={[styles.touch, touchStyle]}
-                ref={component => (this._markerTwo = component)}
+                ref={(component) => (this._markerTwo = component)}
                 {...this._panResponderTwo.panHandlers}
               >
                 {isMarkersSeparated === false ? (
@@ -547,8 +560,6 @@ export default class MultiSlider extends React.Component {
           <Label
             oneMarkerValue={this.state.valueOne}
             twoMarkerValue={this.state.valueTwo}
-            minValue={this.props.min}
-            maxValue={this.props.max}
             oneMarkerLeftPosition={positionOne}
             twoMarkerLeftPosition={positionTwo}
             oneMarkerPressed={this.state.onePressed}
@@ -558,7 +569,7 @@ export default class MultiSlider extends React.Component {
         {this.props.imageBackgroundSource && (
           <ImageBackground
             source={this.props.imageBackgroundSource}
-            style={[{ width: '100%', height: '100%' }, containerStyle]}
+            style={[{ width: "100%", height: "100%" }, containerStyle]}
           >
             {body}
           </ImageBackground>
@@ -573,58 +584,71 @@ export default class MultiSlider extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
-    height: 50,
-    justifyContent: 'center',
+    position: "relative",
+    justifyContent: "center",
+    marginTop: 10,
   },
   fullTrack: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   track: {
     ...Platform.select({
       ios: {
         height: 2,
         borderRadius: 2,
-        backgroundColor: '#A7A7A7',
+        backgroundColor: "#A7A7A7",
       },
       android: {
         height: 2,
-        backgroundColor: '#CECECE',
+        backgroundColor: "#CECECE",
       },
       web: {
         height: 2,
         borderRadius: 2,
-        backgroundColor: '#A7A7A7',
+        backgroundColor: "#A7A7A7",
       },
     }),
   },
   selectedTrack: {
     ...Platform.select({
       ios: {
-        backgroundColor: '#095FFF',
+        backgroundColor: "#095FFF",
       },
       android: {
-        backgroundColor: '#0D8675',
+        backgroundColor: "#0D8675",
       },
       web: {
-        backgroundColor: '#095FFF',
+        backgroundColor: "#095FFF",
       },
     }),
   },
   markerContainer: {
-    position: 'absolute',
+    position: "absolute",
     width: 48,
     height: 48,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
   },
   topMarkerContainer: {
     zIndex: 1,
   },
   touch: {
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "stretch",
+  },
+  scaleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  scaleLabelContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: -30,
+  },
+  scaleLabel: {
+    color: "white",
   },
 });
